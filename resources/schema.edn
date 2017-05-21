@@ -1,0 +1,30 @@
+[{:db/id                 #db/id[:db.part/db]
+  :db/ident              :session/lat
+  :db/cardinality        :db.cardinality/one
+  :db/valueType          :db.type/double
+  :db/doc                "Latitude"
+  :db.install/_attribute :db.part/db}
+ {:db/id                 #db/id[:db.part/db]
+  :db/ident              :session/long
+  :db/cardinality        :db.cardinality/one
+  :db/valueType          :db.type/double
+  :db/doc                "Longitude"
+  :db.install/_attribute :db.part/db}
+ {:db/id                 #db/id[:db.part/db]
+  :db/ident              :session/vel
+  :db/cardinality        :db.cardinality/one
+  :db/valueType          :db.type/double
+  :db/doc                "Valocity"
+  :db.install/_attribute :db.part/db}
+ {:db/id                 #db/id[:db.part/db]
+  :db/ident              :session/gas-lvl
+  :db/cardinality        :db.cardinality/one
+  :db/valueType          :db.type/double
+  :db/doc                "Gas level"
+  :db.install/_attribute :db.part/db}
+ {:db/id                 #db/id[:db.part/db]
+  :db/ident              :session/session-id
+  :db/cardinality        :db.cardinality/one
+  :db/valueType          :db.type/double
+  :db/doc                "Session Id"
+  :db.install/_attribute :db.part/db}]

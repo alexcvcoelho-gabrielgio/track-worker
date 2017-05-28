@@ -9,7 +9,7 @@
 (defn pop [key]
   (wcar* (car/brpop key 0)))
 
-(defn pop-session []
+(defn pop-track []
   (try (let [json (pop "track")]
          (json/read-str (last json) :key-fn keyword))
        (catch Exception e nil)))

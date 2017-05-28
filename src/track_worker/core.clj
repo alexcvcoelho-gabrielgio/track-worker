@@ -1,7 +1,20 @@
 (ns track-worker.core
-  (:gen-class))
+  (:gen-class)
+  (:require [ext.redis :as rd]
+            [clojure.core.async :refer [go thread]]
+            [ext.router :as rt]
+            [clojure.data.json :as json]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
+(defn pull []
+  (let [item (rd/pop-track)]
+    (case (:command item)
+      "track" (rt/save-track item)
+      nil)))
+
+(defn loop-through []
+  (loop []
+    (pull)
+    (recur)))
+
+(defn -main []
+  (loop-through))

@@ -8,11 +8,11 @@
 (def dev-db-uri "datomic:sql://main?jdbc:mysql://gabrielgio.com.br:3306/datomic?user=remote&password=remote")
 
 (defn get-track [{:keys [vel gas-lvl lat long session-id]}]
-  [{:session/vel        vel
-    :session/gas-lvl    gas-lvl
-    :session/lat        lat
-    :session/session-id session-id
-    :session/long       long}])
+  [{:track/vel        vel
+    :track/gas-lvl    gas-lvl
+    :track/lat        lat
+    :track/session-id session-id
+    :track/long       long}])
 
 (def schema (io/resource "schema.edn"))
 

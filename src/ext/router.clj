@@ -5,13 +5,8 @@
             [ext.mongo :as mo]))
 
 (defn save-track [item]
-  (let [datomic-conn (d/connect db/dev-db-uri)
-        mongo-conn (mg/connect-via-uri mo/dev-db-uri)]
-    (db/save-track datomic-conn item)
-    (mo/save-track mongo-conn item)
-    (mg/disconnect (:conn mongo-conn))))
-
+  (db/save-track item)
+  (mo/save-track item))
 
 (defn setup []
-  (let [conn (d/connect db/dev-db-uri)]
-    (db/transact-schema conn)))
+    (db/transact-schema))

@@ -1,11 +1,13 @@
 (ns ext.datomic
-  (:require [cprop.core :refer [load-config]]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [datomic.api :as d]
-            [cprop.source :as source])
+            [environ.core :refer [env]]
+            [mount.core :as mount])
   (:import (datomic Util)))
 
-(def dev-db-uri "datomic:sql://main?jdbc:mysql://gabrielgio.com.br:3306/datomic?user=remote&password=remote")
+(mount/defstate d-conn
+                :start (-> env :datomic d/connect)
+                :stop (-> d-conn .release))
 
 (defn get-track [{:keys [vel gas-lvl lat long session-id]}]
   [{:track/vel        vel
@@ -16,8 +18,8 @@
 
 (def schema (io/resource "schema.edn"))
 
-(defn save-track [conn se]
-  (d/transact conn (get-track se)))
+(defn save-track [se]
+  (d/transact d-conn (get-track se)))
 
 (defn read-txs
   [tx-resource]
@@ -32,5 +34,5 @@
      (transact-all conn (rest txs) @(d/transact conn (first txs)))
      res)))
 
-(defn transact-schema [conn]
-  (transact-all conn (read-txs schema)))
+(defn transact-schema []
+  (transact-all d-conn (read-txs schema)))

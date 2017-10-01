@@ -1,23 +1,27 @@
 (ns track-worker.core
   (:gen-class)
-  (:require [ext.redis :as rd]
+  (:require [ext.kafka :as kf]
+            [clojure.core.async :refer [go thread chan <!!]]
             [clojure.core.async :refer [go thread]]
             [ext.router :as rt]
             [clojure.data.json :as json]))
 
-(defn pull []
-  (let [item (rd/pop-track)]
+(defn pull [item]
     (case (:command item)
       "track" (rt/save-track item)
-      nil)))
+      nil))
 
-(defn loop-through []
+(defn loop-through [c]
   (loop []
     (try
-      (pull)
+      (kf/pop-track-async c)
+      (doseq [i (<!! c)]
+        (pull i))
       (catch Exception e
         (-> e print)))
     (recur)))
 
-(defn -main []
-  (loop-through))
+(defn -main [& args]
+  (mount.core/start)
+  (let [c (chan)]
+    (loop-through c)))

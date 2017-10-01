@@ -2,3 +2,4 @@
 target/
 track-worker.iml
 .nrepl-port
+.lein-env

@@ -19,7 +19,10 @@
 (def schema (io/resource "schema.edn"))
 
 (defn save-track [se]
-  (d/transact d-conn (get-track se)))
+  ((try
+     (d/transact d-conn (get-track se))
+     (catch Exception e
+       (println e)))))
 
 (defn read-txs
   [tx-resource]

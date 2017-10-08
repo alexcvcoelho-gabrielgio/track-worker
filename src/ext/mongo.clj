@@ -6,7 +6,12 @@
 
 (mount.core/defstate m-conn
                      :start (mg/connect-via-uri (env :mongo))
+
                      :stop (mg/disconnect (:conn m-conn)))
 
-(defn save-track [se]
-  (mc/insert (:db m-conn) "track" (assoc se :_id (ObjectId.))))
+(defn get-session [id]
+  (mc/find-one-as-map (:db m-conn) "session" {:uuid id}))
+
+(defn save-track [item]
+  (let [se (get-session (:session-id item))]
+    (mc/update-by-id (:db m-conn) "session" (:_id  se)  (merge se (dissoc item :command :session-id)))))

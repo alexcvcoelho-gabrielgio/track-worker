@@ -14,4 +14,5 @@
 
 (defn save-track [item]
   (let [se (get-session (:session-id item))]
-    (mc/update-by-id (:db m-conn) "session" (:_id  se)  (merge se (dissoc item :command :session-id)))))
+    (if (not (nil? (:_id se)))
+      (mc/update-by-id (:db m-conn) "session" (:_id se) (merge se (dissoc item :command :session-id))))))

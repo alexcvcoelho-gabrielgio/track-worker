@@ -9,20 +9,33 @@
                 :start (-> env :datomic d/connect)
                 :stop (-> d-conn .release))
 
-(defn get-track [{:keys [vel gas-lvl lat long session-id]}]
-  [{:track/vel        vel
-    :track/gas-lvl    gas-lvl
-    :track/lat        lat
-    :track/session-id session-id
-    :track/long       long}])
+(mount/defstate db
+                :start (d/db d-conn))
 
-(def schema (io/resource "schema.edn"))
+
+(defn mount-track
+  ([{:keys [vel gas-lvl lat long session-id]}]
+   [{:session/uid      session-id
+     :session/vel      vel
+     :session/gas-lvl  gas-lvl
+     :session/location #{{:location/x long
+                          :location/y lat}}}])
+  ([{:keys [vel gas-lvl lat long session-id]} id]
+   [{:db/id            id
+     :session/uid      session-id
+     :session/vel      vel
+     :session/gas-lvl  gas-lvl
+     :session/location #{{:location/x long
+                          :location/y lat}}}]))
 
 (defn save-track [se]
-  ((try
-     (d/transact d-conn (get-track se))
-     (catch Exception e
-       (println e)))))
+  (try
+    (let [e (d/entity db [:session/uid (:session-id se)])]
+      (if (not (nil? e))
+        (d/transact d-conn (mount-track se (:db/id e)))
+        (d/transact d-conn (mount-track se))))
+    (catch Exception e
+      (println e))))
 
 (defn read-txs
   [tx-resource]
@@ -36,6 +49,8 @@
    (if (seq txs)
      (transact-all conn (rest txs) @(d/transact conn (first txs)))
      res)))
+
+(def schema (io/resource "schema.edn"))
 
 (defn transact-schema []
   (transact-all d-conn (read-txs schema)))

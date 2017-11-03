@@ -5,7 +5,8 @@
             [ext.mongo :as mo]))
 
 (defn save-track [item]
-  (mo/save-track item))
+  (mo/save-track item)
+  (db/save-track item))
 
 (defn setup []
-    (db/transact-schema))
+  (db/transact-schema))

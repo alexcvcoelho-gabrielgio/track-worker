@@ -1,5 +1,4 @@
-FROM clojure
-COPY . /usr/src/app
+FROM java:8-jre
+COPY ./target/uberjar/ /usr/src/app
 WORKDIR /usr/src/app
-RUN lein deps
-CMD ["lein", "with-profile", "+dev", "run"]
+CMD java -jar track-worker-0.1.0-SNAPSHOT-standalone.jar

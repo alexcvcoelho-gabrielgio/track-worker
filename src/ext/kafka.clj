@@ -7,7 +7,7 @@
 
 (mount/defstate conn
                 :start (let [c (client/consumer {:bootstrap.servers (env :kafka)
-                                                 :group.id          "consumer-tracker-2"}
+                                                 :group.id          "consumer-tracker-3"}
                                                 (client/keyword-deserializer)
                                                 (client/edn-deserializer))]
                          (client/subscribe! c "track")
